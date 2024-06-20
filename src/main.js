@@ -1,22 +1,15 @@
 import { UserCard, CollapsableSection } from "./components/index.js"
+import { RouterProvider, Router } from "./routes/router.js";
+import { routes } from "./routes/routes.js";
 
 const template = document.createElement('template')
 template.innerHTML = `
     <h1>Business Cards</h1>
 
-    <h2>Random Man</h2>
-    <user-card gender="male"></user-card>
-    
-    <h2>Random Woman</h2>
-    <user-card gender="female"></user-card>
-    
-    <h2>Fixed</h2>
-    <user-card 
-        name="Jane Doe"
-        avatar="https://randomuser.me/api/portraits/women/1.jpg"
-        email="janedeo@gmail.com"
-        phone="333-333-3333"
-    ></user-card>
+    <a href="#man">Man</a>
+    <a href="#woman">Woman</a>
+    <a href="#fixed">Fixed</a>
+    <app-router></app-router>
 `;
 
 export class App extends HTMLElement {
@@ -25,8 +18,30 @@ export class App extends HTMLElement {
         this.shadow = this.attachShadow({ mode: 'open' });
         this.shadow.appendChild(template.content.cloneNode(true));
     }
+    
+    connectedCallback(){
+        const router = new Router(routes, this)
+        for (let link of this.shadow.querySelectorAll("a")) {
+            router.registerElement(link);
+        }
+        router.go(router.rootPath)
+    }
+    
+    /**
+     * @param {DocumentFragment} content 
+    */
+   render(content) {
+        const routerProvider = this.shadow.querySelector("app-router")
+    
+        if (!routerProvider) {
+            throw new Error("No Router Provider present in template")
+        }
+        routerProvider.innerHTML = "";
+        routerProvider.appendChild(content);
+    }
 }
 
-window.customElements.define('x-app', App);
+window.customElements.define('app-main', App);
+window.customElements.define('app-router', RouterProvider);
 window.customElements.define('user-card', UserCard);
 window.customElements.define('collapsable-section', CollapsableSection);
