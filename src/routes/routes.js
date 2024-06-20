@@ -1,22 +1,13 @@
-export class Path {
+import { Path } from "./models.js"
 
-    /**
-     * 
-     * @param {string} path 
-     * @param {string} element 
-     */
-    constructor(path, element) {
-        this.path = path;
-        this.element = element;
-    }
-
-}
+export const rootPath = "/"
 
 /**
  * @type {Path[]}
  */
 export const routes = [
     {
+        name: "Home",
         path: "/",
         element: `
             <h2>Random Man</h2>
@@ -24,6 +15,7 @@ export const routes = [
         `
     },
     {
+        name: "Man",
         path: "man",
         element: `
             <h2>Random Man</h2>
@@ -31,6 +23,7 @@ export const routes = [
         `
     },
     {
+        name: "Woman",
         path: "woman",
         element: `
             <h2>Random Woman</h2>
@@ -38,6 +31,7 @@ export const routes = [
         `
     },
     {
+        name: "Fixed",
         path: "fixed",
         element: `
             <h2>Fixed</h2>

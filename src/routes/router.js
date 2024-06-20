@@ -1,30 +1,12 @@
-import { Path } from "./routes.js";
+import { routes, rootPath } from "./routes.js";
 
 
-/**
- * @callback render
- * @param {DocumentFragment} element
- * @returns {void}
- */
+class RouterFactory {
+    /** @type {(Element|null)} */
+    routerProvider = null
 
-/**
-* @typedef {Object} RenderableElement
-* @property {render} render
-*/
-
-
-export class Router {
-    /**
-     * 
-     * @param {Path[]} routes 
-     * @param {RenderableElement} routerTemplate 
-     * @param {string} rootPath 
-    */
-    constructor(routes, routerTemplate, rootPath = "/") {
-        this.routes = routes;
-        this.routerTemplate = routerTemplate;
-        this.rootPath = rootPath;
-
+    initialize() {
+        this.go(window.location.hash);
         window.addEventListener("popstate", this.processEvent.bind(this));
     }
 
@@ -37,8 +19,8 @@ export class Router {
             history.pushState({ route }, "", route);
         }
 
-        const parsedRoute = route.toLowerCase().split("#").pop()
-        const matchedPath = this.routes.find(path => path.path.toLowerCase() == parsedRoute);
+        const parsedRoute = route.toLowerCase().split("#").pop() || rootPath
+        const matchedPath = routes.find(path => path.path.toLowerCase() == parsedRoute);
         const content = matchedPath ? matchedPath.element : "Oops, 404!"
         this.renderTemplate(content);
     }
@@ -48,8 +30,8 @@ export class Router {
      * @param {PopStateEvent} event 
      */
     processEvent(event) {
-        if (!event.state){
-            this.go(this.rootPath)
+        if (!event.state) {
+            this.go(rootPath)
             return;
         }
         this.go(event.state.route)
@@ -61,7 +43,7 @@ export class Router {
     processLink(event) {
         event.preventDefault();
         const targetElement = /** @type {HTMLAnchorElement} */ (event.target);
-        const destinationUrl = targetElement.getAttribute("href") || this.rootPath
+        const destinationUrl = targetElement.getAttribute("href") || rootPath
         this.go(destinationUrl, true);
     }
 
@@ -75,11 +57,13 @@ export class Router {
     /**
      * @param {string} innerHTML
      */
-    renderTemplate(innerHTML){
-        const element = document.createElement("template")
-        element.innerHTML = innerHTML;
-        this.routerTemplate.render(element.content)
+    renderTemplate(innerHTML) {
+        if (!this.routerProvider) {
+            throw new Error("No router provided has been defined");
+        }
+
+        this.routerProvider.innerHTML = innerHTML;
     }
 }
 
-export class RouterProvider extends HTMLElement {}
+export const Router = new RouterFactory()
