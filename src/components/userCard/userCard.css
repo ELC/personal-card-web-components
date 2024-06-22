@@ -31,3 +31,13 @@ i {
     color: var(--accent-color);
     margin-right: 0.5rem;
 }
+
+button {
+    cursor: pointer;
+    background: var(--accent-color);
+    color: var(--light-font-color);
+    border: 0;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-weight: bold;
+}

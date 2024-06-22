@@ -36,7 +36,8 @@ export const routes = [
         element: `
             <h2>Fixed</h2>
             <user-card 
-                name="Jane Doe"
+                first-name="Jane"
+                last-name="Doe"
                 avatar="https://randomuser.me/api/portraits/women/1.jpg"
                 email="janedeo@gmail.com"
                 phone="333-333-3333"
